@@ -8,9 +8,9 @@ from nltk.tree import Tree
 # nltk.download('punkt')
 # nltk.download('averaged_perceptron_tagger')
 
-# set the stanford path
-os.environ['STANFORD_PARSER'] = 'stanford-parser'
-os.environ['STANFORD_MODELS'] = 'stanford-parser'
+# TODO set the stanford path
+os.environ['STANFORD_PARSER'] = 'path/to/stanford-parser'
+os.environ['STANFORD_MODELS'] = 'path/to/stanford-parser'
 
 # set top N
 N = 3
@@ -69,6 +69,7 @@ def get_score(element):
 
 
 if __name__ == '__main__':
+    # TODO replace to the specific malicious query
     s1 = "Malicious query1"
     s1_syntax_info = parse_syntax_info(s1)
 

@@ -2,45 +2,41 @@
 
 
 
-This is the source code for the paper DistillSeq A Framework for Safety Alignment Testing in Large Language Models using Knowledge Distillation.
-
-## Knowledge distill
-
 In line with our ethical commitments, we've chosen not to release the model linked to jailbreak attacks. 
 
-However, we will detail the specific steps involved in the knowledge distill process. The knowledge distill model uses the [RealToxicityPrompts](https://allenai.org/data/real-toxicity-prompts) as input. For GPT-3.5, GPT4.0. the query script is shown in *query_gpt.py*. For LLama and Vicuna, you should follow the instructions in the document([LLama](https://ai.meta.com/llama/), [Vicuna](https://github.com/lm-sys/FastChat)) to deploy the model on your machine.
+However, we will detail the specific steps involved in the training process. Our framework is composed of three primary components: the data collection module, the model training module, and the malicious query generation module.
 
-Once we receive the response from the LLM, we employ the Perspective API to assess its toxicity score. The corresponding query script can be found in *query_perspective.py*.
+## Data collection module
 
-In the following section, we describe two approaches for creating malicious queries.
+In the data collection module, we use the [RealToxicityPrompts](https://allenai.org/data/real-toxicity-prompts) as input. For GPT-3.5, GPT4.0. the query script are shown in *query_gpt.py*. For LLama and Vicuna, you should follow the instruction in document([LLama](https://ai.meta.com/llama/), [Vicuna](https://github.com/lm-sys/FastChat)) to deploy the model on your machine. Once we receive the response from the LLM, we employ the Perspective API to assess its toxicity score. The corresponding query script can be found in *query_perspective.py*.
 
-## Syntax tree based-method
 
-### Prerequisites: 
 
-Required packages and tool are listed in below.
+## Model training module
 
-NLTK:
+In model training module, you should install required package.
 
-```
-pip install nltk
-```
+Prerequisites: 
 
-Stanford Parser:
-
-You should visit [this link](https://nlp.stanford.edu/software/lex-parser.shtml#About) to download and use Stanford Parser.
-
-### How to run
-
-Follow the comment in the *gen_malicious_queries.py* to  complete the *query_model* method. 
-
-Run the following code to generate new malicious queries:
+Required packages are listed in the requirements.txt file:
 
 ```
-python generate_malicious_queries.py
+pip install -r requirements.txt
 ```
 
-## LLM-based method
+The model training code is located within `train_model.py`. Prior to initiating the training process, it is imperative to configure the requisite parameters as outlined in the corresponding publication. These parameters should be meticulously adjusted to align with the configurations specified in the paper. To execute the training, the command `python train_model.py` should be employed.
+
+
+
+## Malicious query generation module
+
+In the following section, we describe two approaches to create malicious queries.
+
+### Syntax tree based-method
+
+- Run the code in *gen_malicious_queries.py* to generate the malicious queries
+
+### LLM-based method
 
 We provide the fine-tuning dataset template in the following format:
 

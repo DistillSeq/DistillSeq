@@ -46,7 +46,7 @@ def encode_texts(tokenizer, texts, labels, max_length):
             text,
             add_special_tokens=True,
             max_length=max_length,
-            padding='max_length',  # 更新此处
+            padding='TODO', 
             return_attention_mask=True,
             return_tensors='pt',
         )
@@ -100,7 +100,7 @@ def train(model, dataloader, optimizer, scheduler, device):
 
     return total_loss / len(dataloader)
 
-def evaluate(model, dataloader, device):
+def evaluate_and_calculate_accuracy(model, dataloader, device):
     model.eval()
     predictions, true_labels = [], []
 
@@ -111,23 +111,25 @@ def evaluate(model, dataloader, device):
         with torch.no_grad():
             outputs = model(b_input_ids, token_type_ids=None, attention_mask=b_input_mask)
 
-        logits = outputs[0]
+        logits = outputs.logits
         logits = logits.detach().cpu().numpy()
         label_ids = b_labels.to('cpu').numpy()
 
-        predictions.append(logits)
-        true_labels.append(label_ids)
+        preds = np.argmax(logits, axis=1)
 
-    predictions = np.concatenate(predictions, axis=0)
-    true_labels = np.concatenate(true_labels, axis=0)
-    return predictions, true_labels
+        predictions.extend(preds)
+        true_labels.extend(label_ids)
+
+    # 计算准确率
+    accuracy = accuracy_score(true_labels, predictions)
+    return accuracy
 
 for epoch_i in range(config["epochs"]):
     print(f'Epoch {epoch_i + 1}/{config["epochs"]}')
     train_loss = train(model, train_dataloader, optimizer, scheduler, device)
     print(f'Train loss: {train_loss}')
-    predictions, true_labels = evaluate(model, validation_dataloader, device)
-    # 这里可以根据predictions和true_labels计算准确率等指标
+    accuracy = evaluate_and_calculate_accuracy(model, validation_dataloader, device)
+    print(f'Validation Accuracy: {accuracy}')
 
 if not os.path.exists(config["save_path"]):
     os.makedirs(config["save_path"])
